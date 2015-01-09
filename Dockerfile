@@ -1,4 +1,4 @@
-FROM johnnyzheng:centos-nginx-php
+FROM johnnyzheng/centos-nginx-php
 MAINTAINER Johnny Zheng <johnny@itfolks.com.au>
 
 RUN curl https://wordpress.org/latest.tar.gz | tar xz
