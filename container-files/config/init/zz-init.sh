@@ -1,5 +1,5 @@
 #!/bin/sh
-: ${DOMAIN:=$HOSTNAME}; : ${DB_ENV_PASS:="$DB_ENV_MARIADB_PASS"};
+: ${DOMAIN:=$HOSTNAME}; : ${DB_ENV_PASS:="$DB_ENV_MARIADB_PASS"};: ${UID:=80};
 DB_NAME=${DOMAIN//./_};SHOP=shop-$DOMAIN;SHOP_PATH=/data/www/$SHOP
 
 export TZ=$TIMEZONE
@@ -24,8 +24,8 @@ if [[ ! -d $SHOP_PATH || "$OVERRIDDEN" == "TRUE" ]]; then
     rm -rf $SHOP_PATH
     mv /wordpress $SHOP_PATH
 fi
-
-if [[ ! $(wp core is-installed) || "$OVERRIDDEN" == "TRUE" ]]; then
+if $(sudo -u www -i -- /usr/local/bin/wp core is-installed --path=$SHOP_PATH --allow-root); then INSTALLED=TRUE; else INSTALLED=FALSE; fi
+if [[ "$INSTALLED" == "FALSE" || "$OVERRIDDEN" == "TRUE" ]]; then
     cd $SHOP_PATH
 
     echo "--- Generate wordpress config---"
