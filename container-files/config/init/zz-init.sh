@@ -37,7 +37,11 @@ if [[ ! $(wp core is-installed) || "$OVERRIDDEN" == "TRUE" ]]; then
         --allow-root
 
     echo "--- Reset wordpress database  ---"
-    /usr/local/bin/wp db reset --yes --allow-root
+    if [ ! $(wp core is-installed) ]; then
+        /usr/local/bin/wp db drop --yes --allow-root
+    else
+        /usr/local/bin/wp db reset --yes --allow-root
+    fi
 
     echo "--- Installing wordpress ---"
     /usr/local/bin/wp core install \
@@ -47,9 +51,14 @@ if [[ ! $(wp core is-installed) || "$OVERRIDDEN" == "TRUE" ]]; then
         --admin_password=$ADMIN_PASSWORD \
         --admin_email=$ADMIN_EMAIL \
         --allow-root
-    /usr/local/bin/wp plugin install wordpress-nginx --activate --allow-root
+    /usr/local/bin/wp plugin install nginx-helper --activate --allow-root
     /usr/local/bin/wp plugin install w3-total-cache --activate --allow-root
-
+#    /usr/local/bin/wp option update home 'http://$DOMAIN' --allow-root
+#    /usr/local/bin/wp option update siteurl 'http://$DOMAIN' --allow-root
+#    /usr/local/bin/wp option update admin_email  '$ADMIN_EMAIL' --allow-root
+#    /usr/local/bin/wp option update admin_password '$ADMIN_PASSWORD' --allow-root
+#    /usr/local/bin/wp user update $ADMIN_EMAIL --display_name=admin --user_pass=$ADMIN_PASSWORD
+#    /usr/local/bin/wp option update blogname '$TITLE' --allow-root
 #    echo "--- Clean up ---"
 
     echo "--- Completed ---"
