@@ -1,0 +1,36 @@
+# data is a volume-only container for keeping the mysql and magento filesystem
+# volumes in one place.
+memcached:
+  image: sylvainlasnier/memcached
+  name: memcached
+data:
+  image: busybox
+  name: data
+backup:
+  image: docker-infra/docker-backup
+  volumes_from:
+    - data
+db:
+  image: tutum/mariadb
+  environment:
+    - MARIADB_PASS=password
+  volumes_from:
+    - data
+web:
+  image: johnnyzheng/centos-nginx-php-wordpress
+  name: web
+  links:
+    - db
+    - "memcached:cache"
+  volumes_from:
+    - data
+  ports:
+    - "80:80"
+  environment:
+    - MARIADB_PASS=password
+    - DOMAIN=www.test-wordpress.com
+    - LOCALE=zh_CN
+    - TIMEZONE=Asia/Shanghai
+    - OVERRIDDEN=TRUE
+    - ADMIN_EMAIL=admin@test-wordpress.com
+    - ADMIN_PASSWORD=password
