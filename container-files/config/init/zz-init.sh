@@ -29,26 +29,29 @@ if [[ ! $(wp core is-installed) || "$OVERRIDDEN" == "TRUE" ]]; then
     cd $SHOP_PATH
 
     echo "--- Generate wordpress config---"
-    sudo -u www -i -- "cd $SHOP_PATH &&/usr/local/bin/wp core config --dbname=$DB_NAME \
+    sudo -u www -i -- /usr/local/bin/wp core config \
+        --dbname=$DB_NAME \
         --dbuser=$DB_ENV_USER \
         --dbpass=$DB_ENV_PASS \
         --dbhost=db \
         --locale=$LOCALE \
-        --allow-root"
+        --path=$SHOP_PATH
+        --allow-root
 
     echo "--- Reset wordpress database  ---"
-    sudo -u www -i -- "cd $SHOP_PATH &&/usr/local/bin/wp db reset --yes --allow-root"
+    sudo -u www -i -- /usr/local/bin/wp db reset --yes --path=$SHOP_PATH --allow-root
 
     echo "--- Installing wordpress ---"
-    sudo -u www -i -- "cd $SHOP_PATH &&/usr/local/bin/wp core install \
+    sudo -u www -i -- /usr/local/bin/wp core install \
         --url=http://$DOMAIN \
         --title=$TITLE \
         --admin_user=admin \
         --admin_password=$ADMIN_PASSWORD \
         --admin_email=$ADMIN_EMAIL \
-        --allow-root"
-    sudo -u www -i -- "cd $SHOP_PATH &&/usr/local/bin/wp plugin install nginx-helper --activate --allow-root"
-    sudo -u www -i -- "cd $SHOP_PATH &&/usr/local/bin/wp plugin install w3-total-cache --activate --allow-root"
+         --path=$SHOP_PATH
+        --allow-root
+    sudo -u www -i -- /usr/local/bin/wp plugin install nginx-helper --activate --path=$SHOP_PATH --allow-root
+    sudo -u www -i -- /usr/local/bin/wp plugin install w3-total-cache --activate --path=$SHOP_PATH --allow-root
 #    /usr/local/bin/wp option update home 'http://$DOMAIN' --allow-root
 #    /usr/local/bin/wp option update siteurl 'http://$DOMAIN' --allow-root
 #    /usr/local/bin/wp option update admin_email  '$ADMIN_EMAIL' --allow-root
