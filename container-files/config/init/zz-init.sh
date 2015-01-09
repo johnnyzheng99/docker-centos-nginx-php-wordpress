@@ -38,7 +38,7 @@ if [[ ! $(wp core is-installed) || "$OVERRIDDEN" == "TRUE" ]]; then
 
     echo "--- Reset wordpress database  ---"
     if [ ! $(wp core is-installed) ]; then
-        /usr/local/bin/wp db drop --yes --allow-root
+        /usr/local/bin/wp db create --yes --allow-root
     else
         /usr/local/bin/wp db reset --yes --allow-root
     fi
