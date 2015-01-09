@@ -29,26 +29,26 @@ if [[ ! $(wp core is-installed) || "$OVERRIDDEN" == "TRUE" ]]; then
     cd $SHOP_PATH
 
     echo "--- Generate wordpress config---"
-    /usr/local/bin/wp core config --dbname=$DB_NAME \
+    sudo -u USER -i -- "cd $SHOP_PATH &&/usr/local/bin/wp core config --dbname=$DB_NAME \
         --dbuser=$DB_ENV_USER \
         --dbpass=$DB_ENV_PASS \
         --dbhost=db \
         --locale=$LOCALE \
-        --allow-root
+        --allow-root"
 
     echo "--- Reset wordpress database  ---"
-    /usr/local/bin/wp db reset --yes --allow-root
+    sudo -u USER -i -- "cd $SHOP_PATH &&/usr/local/bin/wp db reset --yes --allow-root"
 
     echo "--- Installing wordpress ---"
-    /usr/local/bin/wp core install \
+    sudo -u USER -i -- "cd $SHOP_PATH &&/usr/local/bin/wp core install \
         --url=http://$DOMAIN \
         --title=$TITLE \
         --admin_user=admin \
         --admin_password=$ADMIN_PASSWORD \
         --admin_email=$ADMIN_EMAIL \
-        --allow-root
-    /usr/local/bin/wp plugin install nginx-helper --activate --allow-root
-    /usr/local/bin/wp plugin install w3-total-cache --activate --allow-root
+        --allow-root"
+    sudo -u USER -i -- "cd $SHOP_PATH &&/usr/local/bin/wp plugin install nginx-helper --activate --allow-root"
+    sudo -u USER -i -- "cd $SHOP_PATH &&/usr/local/bin/wp plugin install w3-total-cache --activate --allow-root"
 #    /usr/local/bin/wp option update home 'http://$DOMAIN' --allow-root
 #    /usr/local/bin/wp option update siteurl 'http://$DOMAIN' --allow-root
 #    /usr/local/bin/wp option update admin_email  '$ADMIN_EMAIL' --allow-root
